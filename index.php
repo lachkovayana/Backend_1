@@ -1,5 +1,4 @@
 <?php
-
     function getData($method){
         $data = new stdClass();
         if ($method != 'GET'){
@@ -14,8 +13,6 @@
         }
         return $data;
     }
-
-
     function getMethod(){
         return $_SERVER['REQUEST_METHOD'];
     }
@@ -30,8 +27,8 @@
         exit;
     }
 
-    echo "Соединение с MySQL установлено!" , PHP_EOL;
-    echo "Информация о сервере: " , mysqli_get_host_info($link) . PHP_EOL;
+    #echo "Соединение с MySQL установлено!" , PHP_EOL;
+    #echo "Информация о сервере: " , mysqli_get_host_info($link) . PHP_EOL;
 
     $message=[];
     $message["users"] = [];
@@ -57,9 +54,9 @@
 
     $router = $urlList[0];
     $requestData = getData(getMethod());
-
-    if (file_exists(realpath(dirname(__FILE__)).'/routers/' . $router . 'php')){
-        include_once 'routers/' . $router . 'php';
+    echo realpath(dirname(__FILE__)).'/routers/' . $router . '.php' . PHP_EOL;
+    if (file_exists(realpath(dirname(__FILE__)).'/routers/' . $router . '.php')){
+        include_once 'routers/' . $router . '.php';
         route($method, $urlList, $requestData);
     }
     else {
