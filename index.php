@@ -53,8 +53,9 @@
     $urlList = explode('/', $url);
 
     $router = $urlList[0];
-    $requestData = getData(getMethod());
-    echo realpath(dirname(__FILE__)).'/routers/' . $router . '.php' . PHP_EOL;
+    $method = getMethod();
+    $requestData = getData($method);
+    
     if (file_exists(realpath(dirname(__FILE__)).'/routers/' . $router . '.php')){
         include_once 'routers/' . $router . '.php';
         route($method, $urlList, $requestData);
