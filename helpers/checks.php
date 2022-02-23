@@ -18,5 +18,20 @@
         }
         return false;
     }
+    function checkIfIdOwner($token, $id){
+        global $Link;
+
+        $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
+        if (!is_null($username)){
+            if ($id == $username['userId']){
+                return true;
+            }
+            return false;
+        }
+        else {
+            setHTTPStatus("500", "Something went wrong");
+        }
+        return false;
+    }
 
 ?>
