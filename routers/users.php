@@ -11,21 +11,27 @@
             if (is_numeric($urlList[1])){
                 switch($method){
                     case 'GET':
-                        $id = intval($urlList[1]);
-                        if (checkIfAdmin($token) || checkIfIdOwner($token, $id)){
-                            $user= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
-                            if (!is_null($user)){
-                                echo json_encode($user);
+                        if (!empty( $token )){
+
+                            $id = intval($urlList[1]);
+                            if (checkIfAdmin($token) || checkIfIdOwner($token, $id)){
+                                $user= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
+                                if (!is_null($user)){
+                                    echo json_encode($user);
+                                }
+                                else {
+                                    setHTTPStatus("400", "No user with this ID");
+                                }
                             }
-                            else {
-                                setHTTPStatus("400", "No user with this ID");
+                            else{
+                                setHTTPStatus("403", "You do not have permission to view information about this user");
                             }
                         }
-                        else{
-                            setHTTPStatus("403", "You do not have permission to view information about this user");
+                        else {
+                            setHTTPStatus("403", "You must be logged in");
                         }
                     default:
-                    break; 
+                        break; 
                 }
             }
             else {
@@ -37,7 +43,7 @@
         else {
             if ($method == 'GET'){
                 
-                if (!is_null( $token )){
+                if (!empty($token)){
                     if (checkIfAdmin($token)){
                         $users= $Link->query("SELECT userId, username, roleId from users");
                         if (!is_null($users)){
@@ -57,7 +63,7 @@
                     }
                 }
                 else{
-                    setHTTPStatus("403", "Authorization token are invalid");
+                    setHTTPStatus("403", "You must be logged in");
                 }
             }
             else {
