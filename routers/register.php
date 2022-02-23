@@ -60,7 +60,7 @@
             
         }
         else {
-            setHTTPStatus("400", "You can only use GET to /$urlList[0]");
+            setHTTPStatus("400", "You can only use POST to /$urlList[0]");
         }
    }
 ?>

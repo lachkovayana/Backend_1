@@ -6,17 +6,22 @@
 
         if ($method == 'POST'){
             $token = substr(getallheaders()['Authorization'], 7);
-            $logoutResult = $Link->query("DELETE FROM tokens WHERE value='$token'");
-           if (!$logoutResult){
-                // echo $Link->errno . " - " . $Link->error ;
-                setHTTPStatus("500", "Some troubles with logout'");
-           }
-           else {
-               echo "success logout";
-           }
+            if (!empty($token)){
+                $logoutResult = $Link->query("DELETE FROM tokens WHERE value='$token'");
+                if (!$logoutResult){
+                    // echo $Link->errno . " - " . $Link->error ;
+                    setHTTPStatus("500", "Some troubles with logout'");
+                }
+                else {
+                    echo "success logout";
+                }
+            }
+            else {
+                setHTTPStatus("403", "You are not authorized");
+            }
         }
         else {
-            setHTTPStatus("400", "You can only use GET to /$urlList[0]");
+            setHTTPStatus("400", "You can only use POST to /$urlList[0]");
         }
     }
 ?>
