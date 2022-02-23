@@ -1,5 +1,6 @@
 <?php
-    include_once './headers/headers.php';
+    include_once './helpers/headers.php';
+    include_once './helpers/validation.php';
     global $Link;
     function getData($method){
         $data = new stdClass();
@@ -10,7 +11,7 @@
         $dataGet = $_GET;
         foreach ($dataGet as $key => $value) {
             if ($key != "q"){
-                $data ->parameters[$key] = $value;
+                $data->parameters[$key] = $value;
             }
         }
         return $data;
@@ -22,9 +23,9 @@
     header('Content-type: application/json');
     
     $Link = mysqli_connect("127.0.0.1", "backend_demo_1", "password", "backend_demo_1");
+
     if (!$Link) {
         setHTTPStatus("500", "DB Connection Error: " . mysqli_connect_error());
-
         exit;
     }
 
@@ -39,7 +40,7 @@
     $method = getMethod();
     $requestData = getData($method);
     
-    if (file_exists(realpath(dirname(__FILE__)).'/routers/' . $router . '.php')){
+    if (file_exists( realpath(dirname(__FILE__)) . '/routers/' . $router . '.php' )) {
         include_once 'routers/' . $router . '.php';
         route($method, $urlList, $requestData);
     }
