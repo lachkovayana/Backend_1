@@ -3,8 +3,7 @@
         include_once './helpers/headers.php';
 
         global $Link;
-        global $Token;
-        
+
         if ($method == 'POST'){
             $username = $requestData->body->username;
             $password = hash("sha1", $requestData->body->password);
@@ -25,7 +24,6 @@
                 }
                 else {
                     echo json_encode(['token' => $token]);
-                    $Token = $token;
                 }
             }
             else{

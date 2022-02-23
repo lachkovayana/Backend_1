@@ -1,8 +1,9 @@
 <?php
     include_once './helpers/headers.php';
+    include_once './helpers/checks.php';
 
+    
     function route($method, $urlList, $requestData){
-        $admin = "administrator";
         global $Link;
 
         if ($urlList[3]){
@@ -24,18 +25,7 @@
             if ($method == 'GET'){
                 $token = substr(getallheaders()['Authorization'], 7);
                 if (!is_null( $token )){
-                    $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
-                    if (!is_null($username)){
-                        $userId = $username['userId'];
-                        $userFromToken = $Link->query("SELECT roleId from users where userId='$userId'")->fetch_assoc();
-                        $roleId = $userFromToken['roleId'];
-                        $roleOfUser = $Link->query("SELECT name from roles where roleId='$roleId'")->fetch_assoc()['name'];
-                    }
-                    else {
-                        setHTTPStatus("500", "Something went wrong");
-                    }
-
-                    if ($roleOfUser == $admin){
+                    if (checkIfAdmin($token)){
                         $users= $Link->query("SELECT userId, username, roleId from users");
                         if (!is_null($users)){
                             $usersArray = [];
@@ -48,6 +38,7 @@
                             setHTTPStatus("500", "Something went wrong");
                         }
                     }
+                   
                     else {
                         setHTTPStatus("403", "You are not an administrator");
                     }
