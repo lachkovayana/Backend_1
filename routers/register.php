@@ -1,7 +1,8 @@
 <?php
     function route($method, $urlList, $requestData){
     include_once './helpers/headers.php';
-    include_once 'user/user_helper.php';
+    include_once './helpers/validation.php';
+
     global $Link;
 
         if ($method == 'POST'){
@@ -35,12 +36,20 @@
             if (!$userInsertResult){
                 echo $Link->errno . " : " . $Link->error . PHP_EOL;
                 if ($Link->errno == 1062){
-                    setHTTPStatus("403", "Username '$username' is taken");
+                    setHTTPStatus("400", "Username '$username' is taken");
                     return;
                 }
                 if ($Link->errno == 1054){
-                    setHTTPStatus("403", "No such columns");
+                    setHTTPStatus("400", "No such columns");
                     return;
+                }
+                if ($Link->errno == 1366){
+                    setHTTPStatus("400", "Incorrect value (for some column)");
+                    //setHTTPStatus("403", $Link->error);
+                    return;
+                }
+                else {
+                    setHTTPStatus("500", "Something went wrong");
                 }
             }
             else {
