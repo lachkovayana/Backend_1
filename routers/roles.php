@@ -32,7 +32,7 @@
         }
         }
         else {
-            setHTTPStatus("400", "You can only use GET to '/roles'");
+            setHTTPStatus("400", "You can only use GET to /$urlList[0]");
         }
    }
 ?>

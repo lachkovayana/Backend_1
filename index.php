@@ -45,7 +45,7 @@
         route($method, $urlList, $requestData);
     }
     else {
-        echo "NOPE 404";
+        setHTTPStatus("404", "No such path");
     }
 
     

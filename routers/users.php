@@ -31,6 +31,7 @@
                             setHTTPStatus("403", "You must be logged in");
                         }
                     default:
+                        setHTTPStatus("400", "Not allowed method for /$urlList[0]/$urlList[1]");
                         break; 
                 }
             }
@@ -67,7 +68,7 @@
                 }
             }
             else {
-                setHTTPStatus("400", "You can only use GET to '/users'");
+                setHTTPStatus("400", "You can only use GET to /$urlList[0]");
             }
         }
     }
