@@ -8,12 +8,12 @@
             $token = substr(getallheaders()['Authorization'], 7);
             if (!empty($token)){
                 $logoutResult = $Link->query("DELETE FROM tokens WHERE value='$token'");
-                if (!$logoutResult){
-                    // echo $Link->errno . " - " . $Link->error ;
-                    setHTTPStatus("500", "Some troubles with logout'");
+                if ($logoutResult){
+                    echo "success logout";
                 }
                 else {
-                    echo "success logout";
+                    // echo $Link->errno . " - " . $Link->error ;
+                    setHTTPStatus("500", "Some troubles with logout'");
                 }
             }
             else {

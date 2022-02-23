@@ -8,16 +8,16 @@
         $token = substr(getallheaders()['Authorization'], 7);
 
         if ($urlList[1]){
-            if (is_numeric($urlList[1])){
+            $id = intval($urlList[1]);
+            if (is_numeric($id)){
                 switch($method){
                     case 'GET':
                         if (!empty( $token )){
 
-                            $id = intval($urlList[1]);
                             if (checkIfAdmin($token) || checkIfIdOwner($token, $id)){
-                                $user= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
-                                if (!is_null($user)){
-                                    echo json_encode($user);
+                                $userId= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
+                                if (!is_null($userId)){
+                                    echo json_encode($userId);
                                 }
                                 else {
                                     setHTTPStatus("400", "No user with this ID");
@@ -30,6 +30,31 @@
                         else {
                             setHTTPStatus("403", "You must be logged in");
                         }
+                        break;
+
+                    case 'DELETE':
+                        if (!empty( $token )){
+                            if (checkIfAdmin($token)){
+                               
+                                $deleteResult = $Link->query("DELETE FROM users WHERE userId='$id'");
+                                
+                                if ($deleteResult){
+                                    echo "success delete";
+                                }
+                                else {
+                                    echo json_encode($Link->error) . PHP_EOL;
+                                    setHTTPStatus("500", "Unexpected Error :(");
+                                }
+                            }
+                            else{
+                                setHTTPStatus("403", "You do not have permission to delete this user");
+                            }
+                        }
+                        else {
+                            setHTTPStatus("403", "You must be logged in");
+                        }
+                        break;
+
                     default:
                         setHTTPStatus("400", "Not allowed method for /$urlList[0]/$urlList[1]");
                         break; 
@@ -43,16 +68,15 @@
 
         else {
             if ($method == 'GET'){
-                
                 if (!empty($token)){
                     if (checkIfAdmin($token)){
                         $users= $Link->query("SELECT userId, username, roleId from users");
                         if (!is_null($users)){
-                            $users = [];
-                            foreach ($users as $user){
-                                $users[] = $user;
+                            $usersArr = [];
+                            foreach ($users as $userId){
+                                $usersArr[] = $userId;
                             }    
-                            echo json_encode($users);
+                            echo json_encode($usersArr);
                         }
                         else {
                             setHTTPStatus("500", "Something went wrong");

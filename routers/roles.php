@@ -18,12 +18,12 @@
             $token = bin2hex(random_bytes(16));
             $userID = $username['userId'];
             $tokenInsertResult = $Link->query("INSERT INTO tokens(value, userId) values ('$token', '$userID')");
-            if (!$tokenInsertResult){
-                // echo json_encode($Link->error);
-                setHTTPStatus("500", "Unexpected Error");
+            if ($tokenInsertResult){
+                echo json_encode(['token' => $token]);
             }
             else {
-                echo json_encode(['token' => $token]);
+                // echo json_encode($Link->error);
+                setHTTPStatus("500", "Unexpected Error");
             }
         }
         else{

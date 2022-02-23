@@ -13,10 +13,10 @@
                 return;
             }
 
-            $username = $Link->query("SELECT userId from users where username='$username' and password='$password'")->fetch_assoc();
-            if (!is_null($username)){
+            $userId = $Link->query("SELECT userId from users where username='$username' and password='$password'")->fetch_assoc();
+            if (!is_null($userId)){
                 $token = bin2hex(random_bytes(16));
-                $userID = $username['userId'];
+                $userID = $userId['userId'];
                 $tokenInsertResult = $Link->query("INSERT INTO tokens(value, userId) values ('$token', '$userID')");
                 if (!$tokenInsertResult){
                     // echo json_encode($Link->error);
@@ -28,7 +28,7 @@
             }
             else{
                 // echo "400: input data incorrect";
-                setHTTPStatus("500", "Something went wrong");
+                setHTTPStatus("500", "Something went wrong. Probably, you are not registered");
             }
         }
         else {
