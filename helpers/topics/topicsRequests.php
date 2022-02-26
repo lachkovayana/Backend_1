@@ -140,4 +140,26 @@
             }
         }
     }
+
+
+
+    function postChilds($id, $data){
+        global $Link;
+        
+        foreach ($data->body as $elemId){
+            //validation for elemId
+            $patchRequest = $Link->query("UPDATE topics set parentId='$id' where id='$elemId'");
+            //check if request is right            
+        }
+        
+    }
+    function deleteChilds($id, $data){
+        global $Link;
+        
+        foreach ($data->body as $elemId){
+            //validation for elemId
+            $deleteRequest = $Link->query("UPDATE topics set parentId=null where id='$elemId'");
+            //check if request is right            
+        }
+    }
 ?>

@@ -1,4 +1,18 @@
 <?php
+
+
+
+
+
+// доделать something went wrong при /topics/56
+
+
+
+
+
+
+
+
     function route($method, $urlList, $requestData){
         include_once './helpers/headers.php';
         include_once './helpers/checks.php';
@@ -7,11 +21,28 @@
         global $Link;
         
         if ($urlList[1]){
+            $topicId = $urlList[1];
             if ($urlList[2]){
-                //do smth
+                if ($urlList[2] == 'childs'){
+                    switch ($method){
+                        case 'GET':
+                            echo json_encode(getChilds($topicId));
+                            break;
+                        case 'POST':
+                            postChilds($topicId, $requestData);
+                            break;
+                            case 'DELETE':
+                            deleteChilds($topicId, $requestData);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else{
+                    setHTTPStatus("404", "No such path");
+                }
             }
             else {
-                $topicId = $urlList[1];
                 if (is_numeric($topicId)){
                     switch ($method){
                         case 'GET':
