@@ -1,7 +1,7 @@
 <?php
-    function getOneUserInfo($token, $id){
+    function getOneUserInfo($id){
         global $Link;
-        if (checkIfAdmin($token) || checkIfIdOwner($token, $id)){
+        if (checkIfAdmin() || checkIfIdOwner($id)){
             $userId= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
             if (!is_null($userId)){
                 echo json_encode($userId);
@@ -14,9 +14,9 @@
             setHTTPStatus("403", "You do not have permission to view information about this user");
         }
     }
-    function deleteUser($token, $id){
+    function deleteUser($id){
         global $Link;
-        if (checkIfAdmin($token)){
+        if (checkIfAdmin()){
             $deleteResult = $Link->query("DELETE FROM users WHERE userId='$id'");
             
             if ($deleteResult){
@@ -31,9 +31,9 @@
             setHTTPStatus("403", "You do not have permission to delete this user");
         }
     }
-    function updateUserInfo($token, $id, $requestData){
+    function updateUserInfo($id, $requestData){
         global $Link;
-        if (checkIfIdOwner($token, $id)){
+        if (checkIfIdOwner($id)){
             $user = $Link->query("SELECT name, surname from users where userId='$id'")->fetch_assoc();
             
             $name = is_null($requestData->body->name) ? $user['name'] : $requestData->body->name;
@@ -59,9 +59,9 @@
             setHTTPStatus("403", "You can only update your account details");
         }
     }
-    function setUserRole($token, $id, $requestData){
+    function setUserRole( $id, $requestData){
         global $Link;
-        if (checkIfAdmin($token)){
+        if (checkIfAdmin()){
             $roleId=$requestData->body->roleId;
             if (is_int($roleId)){
                 $request =  $Link->query("UPDATE users SET roleId='$roleId' WHERE userId='$id'");
@@ -81,9 +81,9 @@
             setHTTPStatus("403", "You can only update your account details");
         }
     }
-    function getAllUsersInfo($token){
+    function getAllUsersInfo(){
         global $Link;
-        if (checkIfAdmin($token)){
+        if (checkIfAdmin()){
             $users= $Link->query("SELECT userId, username, roleId from users");
             if (!is_null($users)){
                 $usersArr = [];

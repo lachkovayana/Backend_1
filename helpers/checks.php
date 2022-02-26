@@ -1,14 +1,15 @@
 <?php
-    function checkIfAdmin($token){
-        $admin = "administrator";
+    function checkIfAdmin(){
         global $Link;
+        $token = substr(getallheaders()['Authorization'], 7);
+        
         $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
         if (!is_null($username)){
             $userId = $username['userId'];
             $userFromToken = $Link->query("SELECT roleId from users where userId='$userId'")->fetch_assoc();
             $roleId = $userFromToken['roleId'];
             $roleOfUser = $Link->query("SELECT name from roles where roleId='$roleId'")->fetch_assoc()['name'];
-            if ($roleOfUser == $admin){
+            if ($roleOfUser == "administrator"){
                 return true;
             }
         }
@@ -18,8 +19,10 @@
         return false;
     }
     
-    function checkIfIdOwner($token, $id){
+    function checkIfIdOwner($id){
         global $Link;
+        $token = substr(getallheaders()['Authorization'], 7);
+
         $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
         if (!is_null($username)){
             if ($id == $username['userId']){

@@ -7,13 +7,13 @@
         global $Link;
         
         if ($method == 'GET'){
-            $roleId = $urlList[1];
-            if ($roleId){
-                if (is_numeric($roleId) && checkIfRoleExist($roleId)){
+            if ($urlList[1]){
+                $roleId = $urlList[1];
+                if (is_numeric($roleId) ){
                     getOneRole($roleId);
                 }
                 else {
-                    setHTTPStatus("404", "No such path");
+                    setHTTPStatus("400", "Incorrect id data type");
                 }
             }
             else{
