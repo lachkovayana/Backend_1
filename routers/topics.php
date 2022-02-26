@@ -7,13 +7,35 @@
         global $Link;
         
         if ($urlList[1]){
-            $topicId = $urlList[1];
-            if (is_numeric($topicId)){
-                getOneTopic($topicId);
+            if ($urlList[2]){
+                //do smth
             }
             else {
-                setHTTPStatus("400", "Incorrect id data type");
-            }
+                $topicId = $urlList[1];
+                if (is_numeric($topicId)){
+                    switch ($method){
+                        case 'GET':
+                            getOneTopic($topicId);
+                            break;
+                        
+                        case 'PATCH':
+                            if (checkIfAdmin()){
+                                updateTopic($topicId, $requestData);
+                            }
+                            else {
+                                setHTTPStatus("403", "You are not an administrator");
+                            }
+                            break;
+
+                        case 'DELETE':
+                            deleteTopic($topicId);
+                            break;
+                    }
+                }
+                else {
+                    setHTTPStatus("400", "Incorrect id data type");
+                }
+            } 
         }
         else{
             switch ($method){

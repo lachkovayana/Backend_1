@@ -20,6 +20,7 @@
         global $Link;
         $topic = $Link->query("SELECT * from topics where id='$topicId'")->fetch_assoc();
         if (!is_null($topic)){ 
+            $topic['childs'] = getChilds($topic['id']);
             echo json_encode($topic);
         }
         else {
@@ -85,5 +86,58 @@
             }
         }
         return $someArr;   
+    }
+
+
+    function deleteTopic($topicId){
+        global $Link;
+        if (checkIfAdmin()){
+            $deleteResult = $Link->query("DELETE FROM topics WHERE id='$topicId'");
+            
+            if ($deleteResult){
+               setHTTPStatus("200", "OK");
+                // echo "OK";
+            }
+            else {
+                echo json_encode($Link->error) . PHP_EOL;
+                setHTTPStatus("500", "Unexpected Error :(");
+            }
+        }
+        else{
+            setHTTPStatus("403", "You do not have permission to delete this user");
+        }
+    }
+    function updateTopic($topicId, $data){
+        global $Link;
+        $name = $data->body->name;
+        $parentId = $data->body->parentId;
+        if ($name && is_string($name)){
+            $patchRequest = $Link->query("UPDATE  topics set name='$name' where id='$topicId'");
+        }
+        else if ($parentId && is_integer($parentId)){
+            $patchRequest = $Link->query("UPDATE  topics set parentId='$parentId' where id='$topicId'");
+        }
+        else{
+            setHTTPStatus("400", "Incorrect input data");
+            return;
+        }
+
+        if ($patchRequest){
+            getAllTopicsWChilds();
+        }
+        else{
+            // echo $Link->errno . " : " . $Link->error . PHP_EOL;
+            if ($Link->errno == 1062){
+                setHTTPStatus("400", "Name '$name' is taken");
+                return;
+            }
+            else if ($Link->errno == 1054){
+                setHTTPStatus("400", "No such columns");
+                return;
+            }
+            else{
+                echo "Something went wrong";
+            }
+        }
     }
 ?>

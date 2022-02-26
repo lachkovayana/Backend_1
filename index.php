@@ -29,8 +29,8 @@
         exit;
     }
 
-    $message=[];
-    $message["users"] = [];
+    // $message=[];
+    // $message["users"] = [];
     
     $url = isset($_GET['q']) ? $_GET['q'] : '';
     $url = rtrim($url, '/');
