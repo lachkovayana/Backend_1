@@ -2,7 +2,6 @@
     function checkIfAdmin($token){
         $admin = "administrator";
         global $Link;
-
         $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
         if (!is_null($username)){
             $userId = $username['userId'];
@@ -18,9 +17,9 @@
         }
         return false;
     }
+    
     function checkIfIdOwner($token, $id){
         global $Link;
-
         $username = $Link->query("SELECT userId from tokens where value='$token'")->fetch_assoc();
         if (!is_null($username)){
             if ($id == $username['userId']){
@@ -32,6 +31,18 @@
             setHTTPStatus("500", "Something went wrong");
         }
         return false;
+    }
+
+    function checkIfTokenIsExist($token){
+        global $Link;
+        $request= $Link->query("SELECT * from tokens where value='$token'")->fetch_assoc();
+        return !is_null($request);
+    }
+
+    function checkIfRoleExist($roleId){
+        global $Link;
+        $request= $Link->query("SELECT name from roles where roleId='$roleId'")->fetch_assoc();
+        return !is_null($request);
     }
 
 ?>

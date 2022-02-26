@@ -1,36 +1,25 @@
 <?php
     function route($method, $urlList, $requestData){
-    include_once './helpers/headers.php';
+        include_once './helpers/headers.php';
+        include_once './helpers/checks.php';
+        include_once './helpers/roles/rolesRequests.php';
 
-    global $Link;
-    
-    if ($method == 'GET'){
-        $username = $requestData->body->username;
-        $password = hash("sha1", $requestData->body->password);
+        global $Link;
         
-        if (!is_string($username) || !is_string($requestData->body->password) ){
-            setHTTPStatus("400", "Password or username is not a string");
-            return;
-        }
-
-        $username = $Link->query("SELECT userId from users where username='$username' and password='$password'")->fetch_assoc();
-        if (!is_null($username)){
-            $token = bin2hex(random_bytes(16));
-            $userID = $username['userId'];
-            $tokenInsertResult = $Link->query("INSERT INTO tokens(value, userId) values ('$token', '$userID')");
-            if ($tokenInsertResult){
-                echo json_encode(['token' => $token]);
+        if ($method == 'GET'){
+            $roleId = $urlList[1];
+            if ($roleId){
+                if (is_numeric($roleId) && checkIfRoleExist($roleId)){
+                    getOneRole($roleId);
+                }
+                else {
+                    setHTTPStatus("404", "No such path");
+                }
             }
-            else {
-                // echo json_encode($Link->error);
-                setHTTPStatus("500", "Unexpected Error");
+            else{
+                    getAllRoles();
+                }
             }
-        }
-        else{
-            // echo "400: input data incorrect";
-            setHTTPStatus("500", "Something went wrong");
-        }
-        }
         else {
             setHTTPStatus("405", "You can only use GET to /$urlList[0]");
         }
