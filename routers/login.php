@@ -19,7 +19,6 @@
                 $userID = $userId['userId'];
                 $tokenInsertResult = $Link->query("INSERT INTO tokens(value, userId) values ('$token', '$userID')");
                 if (!$tokenInsertResult){
-                    // echo json_encode($Link->error);
                     setHTTPStatus("500", "Unexpected Error");
                 }
                 else {
@@ -32,7 +31,7 @@
             }
         }
         else {
-            setHTTPStatus("400", "You can only use POST to /$urlList[0]");
+            setHTTPStatus("405", "You can only use POST to /$urlList[0]");
         }
     }
 ?>

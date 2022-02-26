@@ -44,8 +44,11 @@
                     return;
                 }
                 if ($Link->errno == 1366){
-                    setHTTPStatus("400", "Incorrect value (for some column)");
-                    //setHTTPStatus("403", $Link->error);
+                    setHTTPStatus("400", "Incorrect value in some column");
+                    return;
+                }
+                if ($Link->errno == 1452){
+                    setHTTPStatus("400", "No such role");
                     return;
                 }
                 else {
@@ -53,14 +56,14 @@
                 }
             }
             else {
-                echo "success";
+                echo "Success register!";
             }
             echo json_encode($requestData);
             
             
         }
         else {
-            setHTTPStatus("400", "You can only use POST to /$urlList[0]");
+            setHTTPStatus("405", "You can only use POST to /$urlList[0]");
         }
    }
 ?>
