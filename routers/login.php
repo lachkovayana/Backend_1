@@ -5,13 +5,15 @@
         global $Link;
 
         if ($method == 'POST'){
+        
             $username = $requestData->body->username;
-            $password = hash("sha1", $requestData->body->password);
-            
+            $password = $requestData->body->password;
+
             if (!is_string($username) || !is_string($requestData->body->password) ){
-                setHTTPStatus("400", "Password or username is not a string");
+                setHTTPStatus("400", "Password and username must be a string");
                 return;
             }
+            $password = hash("sha1", $requestData->body->password);
 
             $userId = $Link->query("SELECT userId from users where username='$username' and password='$password'")->fetch_assoc();
             if (!is_null($userId)){
@@ -26,7 +28,7 @@
                 }
             }
             else{
-                // echo "400: input data incorrect";
+
                 setHTTPStatus("500", "Something went wrong. Probably, you are not registered");
             }
         }
