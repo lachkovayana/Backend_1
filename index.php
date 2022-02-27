@@ -12,6 +12,7 @@
         foreach ($dataGet as $key => $value) {
             if ($key != "q"){
                 $data->parameters[$key] = $value;
+                // echo "params \n" + $key + " " + $value + PHP_EOL;
             }
         }
         return $data;

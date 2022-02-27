@@ -6,8 +6,8 @@
         $topicsRequest = $Link->query("SELECT * from topics");
         if (!is_null($topicsRequest)){
             $topicsArray = [];
-            foreach ($topicsRequest as $userId){
-                $topicsArray[] = $userId;
+            foreach ($topicsRequest as $user){
+                $topicsArray[] = $user;
             }    
             echo json_encode($topicsArray);
         }
@@ -72,7 +72,6 @@
                 echo "Something went wrong";
             }
         }
-        
 
     }
 
@@ -96,7 +95,6 @@
             
             if ($deleteResult){
                setHTTPStatus("200", "OK");
-                // echo "OK";
             }
             else {
                 echo json_encode($Link->error) . PHP_EOL;
@@ -150,6 +148,7 @@
             //validation for elemId
             $patchRequest = $Link->query("UPDATE topics set parentId='$id' where id='$elemId'");
             //check if request is right            
+            getOneTopic($id);  
         }
         
     }
@@ -159,7 +158,8 @@
         foreach ($data->body as $elemId){
             //validation for elemId
             $deleteRequest = $Link->query("UPDATE topics set parentId=null where id='$elemId'");
-            //check if request is right            
+            //check if request is right     
+           getOneTopic($id);  
         }
     }
 ?>
