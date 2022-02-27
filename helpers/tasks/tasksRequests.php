@@ -1,9 +1,24 @@
 <?php
-    function getAllTasks(){
+    function getAllTasks($data){
         global $Link;
       
-        $tasksRequest = $Link->query("SELECT * from tasks");
-        if (!is_null($tasksRequest)){
+        $nameFilter = $data->parameters['name'];
+        $topicFilter = $data->parameters['topicId'];
+
+        if ($nameFilter && $topicFilter){
+            $tasksRequest = $Link->query("SELECT * from tasks where topicId='$topicFilter' and name='$nameFilter'");
+        }
+        else if ($nameFilter && !$topicFilter){
+            $tasksRequest = $Link->query("SELECT * from tasks where name='$nameFilter'");
+        }
+        else if (!$nameFilter && $topicFilter){
+            $tasksRequest = $Link->query("SELECT * from tasks where topicId='$topicFilter'");
+        }
+        else{
+            $tasksRequest = $Link->query("SELECT * from tasks");
+        }
+        
+        if ($tasksRequest){
             $tasksArray = [];
             foreach ($tasksRequest as $task){
                 $tasksArray[] = $task;
@@ -11,6 +26,7 @@
             echo json_encode($tasksArray);
         }
         else {
+            echo $Link->errno . $Link->error;
             setHTTPStatus("500", "Something went wrong");
         }
     }

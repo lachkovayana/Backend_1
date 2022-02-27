@@ -23,7 +23,7 @@
         else{
             switch ($method){
                 case 'GET':
-                    getAllTopics("topics");
+                    getAllTopics($requestData);
                     break;
                 case 'POST':
                     if (checkIfAdmin()){

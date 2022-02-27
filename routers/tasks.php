@@ -47,7 +47,7 @@
         // else{
             switch ($method){
                 case 'GET':
-                    getAllTasks();
+                    getAllTasks($requestData);
                     break;
                 case 'POST':
                     if (checkIfAdmin()){

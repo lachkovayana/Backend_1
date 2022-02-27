@@ -1,10 +1,25 @@
 <?php
 
-    function getAllTopics(){
+    function getAllTopics($data){
         global $Link;
       
-        $topicsRequest = $Link->query("SELECT * from topics");
-        if (!is_null($topicsRequest)){
+        $nameFilter = $data->parameters['name'];
+        $parentFilter = $data->parameters['parentId'];
+
+        if ($nameFilter && $parentFilter){
+            $topicsRequest = $Link->query("SELECT * from topics where parentId='$parentFilter' and name='$nameFilter'");
+        }
+        else if ($nameFilter && !$parentFilter){
+            $topicsRequest = $Link->query("SELECT * from topics where name='$nameFilter'");
+        }
+        else if (!$nameFilter && $parentFilter){
+            $topicsRequest = $Link->query("SELECT * from topics where parentId='$parentFilter'");
+        }
+        else{
+            $topicsRequest = $Link->query("SELECT * from topics");
+        }
+        
+        if ($topicsRequest){
             $topicsArray = [];
             foreach ($topicsRequest as $user){
                 $topicsArray[] = $user;
@@ -12,6 +27,7 @@
             echo json_encode($topicsArray);
         }
         else {
+            echo $Link->errno . $Link->error;
             setHTTPStatus("500", "Something went wrong");
         }
         
