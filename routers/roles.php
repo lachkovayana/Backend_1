@@ -7,19 +7,23 @@
         global $Link;
         
         if ($method == 'GET'){
-            if ($urlList[1]){
-                $roleId = $urlList[1];
-                if (is_numeric($roleId) ){
-                    getOneRole($roleId);
+            if (checkToken()){
+
+                if ($urlList[1]){
+                    $roleId = $urlList[1];
+                    if (is_numeric($roleId))
+                        getOneRole($roleId);
+                    else 
+                        setHTTPStatus("400", "Incorrect id data type");
                 }
-                else {
-                    setHTTPStatus("400", "Incorrect id data type");
-                }
+                else
+                        getAllRoles();
+                    
             }
-            else{
-                    getAllRoles();
-                }
+            else {
+                setHTTPStatus("403", "Authorization token are invalid");
             }
+        }
         else {
             setHTTPStatus("405", "You can only use GET to /$urlList[0]");
         }

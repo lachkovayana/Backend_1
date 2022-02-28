@@ -6,16 +6,16 @@
         $topicFilter = $data->parameters['topicId'];
 
         if ($nameFilter && $topicFilter){
-            $tasksRequest = $Link->query("SELECT * from tasks where topicId='$topicFilter' and name='$nameFilter'");
+            $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where topicId='$topicFilter' and name='$nameFilter'");
         }
         else if ($nameFilter && !$topicFilter){
-            $tasksRequest = $Link->query("SELECT * from tasks where name='$nameFilter'");
+            $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where name='$nameFilter'");
         }
         else if (!$nameFilter && $topicFilter){
-            $tasksRequest = $Link->query("SELECT * from tasks where topicId='$topicFilter'");
+            $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where topicId='$topicFilter'");
         }
         else{
-            $tasksRequest = $Link->query("SELECT * from tasks");
+            $tasksRequest = $Link->query("SELECT id, name, topicId from tasks");
         }
         
         if ($tasksRequest){
@@ -28,6 +28,17 @@
         else {
             echo $Link->errno . $Link->error;
             setHTTPStatus("500", "Something went wrong");
+        }
+    }
+
+    function getOneTask($id){
+        global $Link;
+        $task = $Link->query("SELECT id, name, topicId, description, price, isDraft from tasks where id='$id'")->fetch_assoc();
+        if ($task){ 
+            echo json_encode($task);
+        }
+        else {
+            setHTTPStatus("404", "Task $id not found");
         }
     }
 

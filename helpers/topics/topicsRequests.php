@@ -1,5 +1,4 @@
 <?php
-
     function getAllTopics($data){
         global $Link;
       
@@ -60,6 +59,7 @@
         global $Link;
         $name = $data->body->name;
         $parentId = $data->body->parentId;
+
         if (is_string($name) && !$parentId){
             $postRequest = $Link->query("INSERT into topics (name) values ('$name')");
         }
@@ -84,6 +84,10 @@
                 setHTTPStatus("400", "No such columns");
                 return;
             }
+            else if ($Link->errno == 1452){
+                setHTTPStatus("400", "No task with id $parentId");
+                return;
+            }
             else{
                 echo "Something went wrong";
             }
@@ -94,51 +98,47 @@
     function getChilds($id){
         global $Link;
         $topicsRequest = $Link->query("SELECT * from topics");
-        $someArr = [];
+        $childsArray = [];
         foreach ($topicsRequest as $topic){
             if ( $topic["parentId"] && $id == $topic["parentId"]){
-                array_push( $someArr, $topic);
+                array_push( $childsArray, $topic);
             }
         }
-        return $someArr;   
+        return $childsArray;   
     }
 
 
     function deleteTopic($topicId){
         global $Link;
-        if (checkIfAdmin()){
-            $deleteResult = $Link->query("DELETE FROM topics WHERE id='$topicId'");
-            
-            if ($deleteResult){
-               setHTTPStatus("200", "OK");
-            }
-            else {
-                echo json_encode($Link->error) . PHP_EOL;
-                setHTTPStatus("500", "Unexpected Error :(");
-            }
+        $deleteResult = $Link->query("DELETE FROM topics WHERE id='$topicId'");
+        
+        if ($deleteResult){
+            setHTTPStatus("200", "OK");
         }
-        else{
-            setHTTPStatus("403", "You do not have permission to delete this user");
+        else {
+            echo json_encode($Link->error) . PHP_EOL;
+            setHTTPStatus("500", "Unexpected Error :(");
         }
+        
     }
     function updateTopic($topicId, $data){
         global $Link;
         $name = $data->body->name;
         $parentId = $data->body->parentId;
-        if ($name && is_string($name)){
-            $patchRequest = $Link->query("UPDATE  topics set name='$name' where id='$topicId'");
-        }
-        else if ($parentId && is_integer($parentId)){
-            $patchRequest = $Link->query("UPDATE  topics set parentId='$parentId' where id='$topicId'");
-        }
-        else{
+        if ($name && !is_string($name) || $parentId && !is_int($parentId)) {
             setHTTPStatus("400", "Incorrect input data");
             return;
         }
 
-        if ($patchRequest){
+        if ($name)
+            $patchRequest = $Link->query("UPDATE  topics set name='$name' where id='$topicId'");
+
+        if ($parentId)
+            $patchRequest = $Link->query("UPDATE  topics set parentId='$parentId' where id='$topicId'");
+
+        if ($patchRequest)
             getAllTopicsWChilds();
-        }
+        
         else{
             // echo $Link->errno . " : " . $Link->error . PHP_EOL;
             if ($Link->errno == 1062){
@@ -150,32 +150,38 @@
                 return;
             }
             else{
-                echo "Something went wrong";
+                setHTTPStatus("400", "Something went wrong");
             }
         }
     }
 
 
 
-    function postChilds($id, $data){
+    function postChilds($parentId, $data){
         global $Link;
         
-        foreach ($data->body as $elemId){
-            //validation for elemId
-            $patchRequest = $Link->query("UPDATE topics set parentId='$id' where id='$elemId'");
-            //check if request is right            
-            getOneTopic($id);  
+        foreach ($data->body as $childId){
+            if (!is_int($childId)){
+                setHTTPStatus("400", "Incorrect child id data type");
+                return;
+            }
+
+            $patchRequest = $Link->query("UPDATE topics set parentId='$parentId' where id='$childId'");      
         }
+        getOneTopic($parentId); 
+        
         
     }
-    function deleteChilds($id, $data){
+    function deleteChilds($parentId, $data){
         global $Link;
         
-        foreach ($data->body as $elemId){
-            //validation for elemId
-            $deleteRequest = $Link->query("UPDATE topics set parentId=null where id='$elemId'");
-            //check if request is right     
-           getOneTopic($id);  
+        foreach ($data->body as $childId){
+            if (!is_int($childId)){
+                setHTTPStatus("400", "Incorrect child id data type");
+                return;
+            }
+            $deleteRequest = $Link->query("UPDATE topics set parentId=null where id='$childId'");   
         }
+        getOneTopic($parentId);  
     }
 ?>

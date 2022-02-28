@@ -7,44 +7,11 @@
 
         global $Link;
         
-        // if ($urlList[1]){
-        //     $topicId = $urlList[1];
-        //     if ($urlList[2]){
-        //         if (){
-        //             switch ($method){
-        //                 case 'GET':
-        //                     break;
-        //                 case 'POST':
-        //                     break;
-        //                     case 'DELETE':
-        //                     break;
-        //                 default:
-        //                     break;
-        //             }
-        //         }
-        //         else{
-        //             setHTTPStatus("404", "No such path");
-        //         }
-        //     }
-        //     else {
-        //         if (){
-        //             switch ($method){
-        //                 case 'GET':
-        //                     break;
-                        
-        //                 case 'PATCH':
-        //                     break;
-
-        //                 case 'DELETE':
-        //                     break;
-        //             }
-        //         }
-        //         else {
-        //             setHTTPStatus("400", "Incorrect id data type");
-        //         }
-        //     } 
-        // }
-        // else{
+        if ($urlList[1]){
+            include_once 'tasks_taskId.php';
+            route_1($method, $urlList, $requestData);
+        }
+        else{
             switch ($method){
                 case 'GET':
                     getAllTasks($requestData);
@@ -59,5 +26,5 @@
                     break;
             }
         }
-//    }
+   }
 ?>

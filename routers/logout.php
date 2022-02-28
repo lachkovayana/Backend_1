@@ -7,7 +7,7 @@
 
         if ($method == 'POST'){
             $token = substr(getallheaders()['Authorization'], 7);
-            if (!empty($token) && checkIfTokenIsExist($token)){
+            if (checkToken()){
                 $logoutResult = $Link->query("DELETE FROM tokens WHERE value='$token'");
                 if ($logoutResult){
                     echo "success logout";

@@ -1,104 +1,81 @@
 <?php
     function getOneUserInfo($id){
         global $Link;
-        if (checkIfAdmin() || checkIfIdOwner($id)){
-            $userId= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
-            if (!is_null($userId)){
-                echo json_encode($userId);
-            }
-            else {
-                setHTTPStatus("400", "No user with this ID");
-            }
+        $userId= $Link->query("SELECT userId, username, roleId, name, surname from users where userId='$id'")->fetch_assoc();
+        if ($userId){
+            echo json_encode($userId);
         }
-        else{
-            setHTTPStatus("403", "You do not have permission to view information about this user");
+        else {
+            setHTTPStatus("400", "No user with this ID");
         }
+       
     }
     function deleteUser($id){
         global $Link;
-        if (checkIfAdmin()){
-            $deleteResult = $Link->query("DELETE FROM users WHERE userId='$id'");
-            
-            if ($deleteResult){
-                echo "OK";
-            }
-            else {
-                echo json_encode($Link->error) . PHP_EOL;
-                setHTTPStatus("500", "Unexpected Error :(");
-            }
+        $deleteResult = $Link->query("DELETE FROM users WHERE userId='$id'");
+        if ($deleteResult){
+            echo setHTTPStatus("200", "OK");
         }
-        else{
-            setHTTPStatus("403", "You do not have permission to delete this user");
+        else {
+            echo json_encode($Link->error) . PHP_EOL;
+            setHTTPStatus("500", "Unexpected Error :(");
         }
+        
     }
     function updateUserInfo($id, $requestData){
         global $Link;
-        if (checkIfIdOwner($id)){
-            $user = $Link->query("SELECT name, surname from users where userId='$id'")->fetch_assoc();
-            
-            $name = is_null($requestData->body->name) ? $user['name'] : $requestData->body->name;
-            $surname=is_null($requestData->body->surname) ? $user['surname'] : $requestData->body->surname;
-            if (is_null($requestData->body->password)){
-                $patchRequest =  $Link->query("UPDATE users SET name='$name',surname='$surname' WHERE userId='$id'");
-            }
-            else{
-                $password = hash("sha1", $requestData->body->password); 
-                $patchRequest =  $Link->query("UPDATE users SET name='$name',password='$password',surname='$surname' WHERE userId='$id'");
-            }
+        $user = $Link->query("SELECT name, surname from users where userId='$id'")->fetch_assoc();
+        
+        $name = is_null($requestData->body->name) ? $user['name'] : $requestData->body->name;
+        $surname=is_null($requestData->body->surname) ? $user['surname'] : $requestData->body->surname;
+        if (is_null($requestData->body->password)){
+            $patchRequest =  $Link->query("UPDATE users SET name='$name',surname='$surname' WHERE userId='$id'");
+        }
+        else{
+            $password = hash("sha1", $requestData->body->password); 
+            $patchRequest =  $Link->query("UPDATE users SET name='$name',password='$password',surname='$surname' WHERE userId='$id'");
+        }
 
-            if ($patchRequest){
-                $user = $Link->query("SELECT userId, username, roleId, name, surname  from users where userId='$id'")->fetch_assoc();
-                echo json_encode($user);
-            }
-            else {
-                echo json_encode($Link->error) . PHP_EOL;
-                setHTTPStatus("500", "Unexpected Error");
-            }
+        if ($patchRequest){
+            $user = $Link->query("SELECT userId, username, roleId, name, surname  from users where userId='$id'")->fetch_assoc();
+            echo json_encode($user);
         }
         else {
-            setHTTPStatus("403", "You can only update your account details");
+            echo json_encode($Link->error) . PHP_EOL;
+            setHTTPStatus("500", "Unexpected Error");
         }
+       
     }
     function setUserRole( $id, $requestData){
         global $Link;
-        if (checkIfAdmin()){
-            $roleId=$requestData->body->roleId;
-            if (is_int($roleId)){
-                $request =  $Link->query("UPDATE users SET roleId='$roleId' WHERE userId='$id'");
-                if ($request){
-                    echo "OK";
-                }
-                else {
-                    echo json_encode($Link->error) . PHP_EOL;
-                    setHTTPStatus("500", "Unexpected Error here");
-                }
+        $roleId=$requestData->body->roleId;
+        if (is_int($roleId)){
+            $request =  $Link->query("UPDATE users SET roleId='$roleId' WHERE userId='$id'");
+            if ($request){
+               setHTTPStatus("200", "OK");
             }
             else {
-                setHTTPStatus("400", "Incorrect input value");
+                echo json_encode($Link->error) . PHP_EOL;
+                setHTTPStatus("500", "Unexpected Error here");
             }
         }
         else {
-            setHTTPStatus("403", "You can only update your account details");
+            setHTTPStatus("400", "Incorrect input value");
         }
+       
     }
     function getAllUsersInfo(){
         global $Link;
-        if (checkIfAdmin()){
-            $users= $Link->query("SELECT userId, username, roleId from users");
-            if (!is_null($users)){
-                $usersArr = [];
-                foreach ($users as $userId){
-                    $usersArr[] = $userId;
-                }    
-                echo json_encode($usersArr);
-            }
-            else {
-                setHTTPStatus("500", "Something went wrong");
-            }
+        $users= $Link->query("SELECT userId, username, roleId from users");
+        if (!is_null($users)){
+            $usersArr = [];
+            foreach ($users as $userId){
+                $usersArr[] = $userId;
+            }    
+            echo json_encode($usersArr);
         }
-        
         else {
-            setHTTPStatus("403", "You are not an administrator");
+            setHTTPStatus("500", "Something went wrong");
         }
     }
 ?>
