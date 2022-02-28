@@ -3,7 +3,7 @@
         include_once './helpers/headers.php';
         include_once './helpers/checks.php';
         include_once './helpers/tasks/tasksRequests.php';
-        include_once './helpers/tasks/input.php';
+        include_once './helpers/tasks/files.php';
 
         $taskId = $urlList[1];
         if (is_numeric($taskId)){
@@ -12,10 +12,10 @@
                     if (checkToken())
                         switch($urlList[2]){
                             case 'input':
-                                // getInput($taskId);
+                                getFilePath($taskId, 'input');
                                 break;
-                            case 'output':
-                                // getOutput($taskId);
+                                case 'output':
+                                getFilePath($taskId, 'output');
                                 break;
                             case null:
                                 getOneTask($taskId);
@@ -38,10 +38,10 @@
                     if(checkIfAdmin())
                         switch($urlList[2]){
                             case 'input':
-                                postInput($taskId);
+                                postFile($taskId, 'input');
                                 break;
-                            case 'output':
-                                // updateOutput($taskId);
+                                case 'output':
+                                postFile($taskId, 'output');
                                 break;
                             
                             default:
@@ -54,10 +54,10 @@
                     if(checkIfAdmin())
                         switch($urlList[2]){
                             case 'input':
-                                // deleteInput();
+                                deleteFile($taskId, 'input');
                                 break;
-                            case 'output':
-                                // deleteOutput($taskId);
+                                case 'output':
+                                    deleteFile($taskId, 'output');
                                 break;
                             case null:
                                 deleteTask($taskId);
