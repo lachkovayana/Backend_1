@@ -4,17 +4,18 @@
         include_once './helpers/checks.php';
         include_once './helpers/tasks/tasksRequests.php';
         include_once './helpers/tasks/files.php';
+        include_once './helpers/tasks/solutions.php';
 
         $taskId = $urlList[1];
         if (is_numeric($taskId)){
             switch ($method){
                 case 'GET':
-                    if (checkToken())
+                    // if (checkToken())
                         switch($urlList[2]){
                             case 'input':
                                 getFilePath($taskId, 'input');
                                 break;
-                                case 'output':
+                            case 'output':
                                 getFilePath($taskId, 'output');
                                 break;
                             case null:
@@ -23,8 +24,8 @@
                             default:
                                 setHTTPStatus("404", "No such path");
                         }
-                    else 
-                        setHTTPStatus("403", "Authorization token are invalid");
+                    // else 
+                    //     setHTTPStatus("403", "Authorization token are invalid");
                     break;
                 case 'PATCH':
                     if(checkIfAdmin()){
@@ -35,15 +36,17 @@
                     }
                     break;
                 case 'POST':
-                    if(checkIfAdmin())
+                    if(checkIfAdmin() || ($urlList[2] == 'solution' && checkToken()))
                         switch($urlList[2]){
                             case 'input':
                                 postFile($taskId, 'input');
                                 break;
-                                case 'output':
+                            case 'output':
                                 postFile($taskId, 'output');
                                 break;
-                            
+                            case 'solution':
+                                postSolution($requestData, $taskId);
+                                break;
                             default:
                                 setHTTPStatus("404", "No such path");
                         }
@@ -56,8 +59,8 @@
                             case 'input':
                                 deleteFile($taskId, 'input');
                                 break;
-                                case 'output':
-                                    deleteFile($taskId, 'output');
+                            case 'output':
+                                deleteFile($taskId, 'output');
                                 break;
                             case null:
                                 deleteTask($taskId);
