@@ -1,7 +1,7 @@
 <?php
     include_once './helpers/headers.php';
     include_once './helpers/validation.php';
-    global $Link;
+    global $Link, $UploadsDir;
     function getData($method){
         $data = new stdClass();
         if ($method != 'GET'){
@@ -28,9 +28,6 @@
         setHTTPStatus("500", "DB Connection Error: " . mysqli_connect_error());
         exit;
     }
-
-    // $message=[];
-    // $message["users"] = [];
     
     $url = isset($_GET['q']) ? $_GET['q'] : '';
     $url = rtrim($url, '/');
@@ -39,7 +36,9 @@
     $router = $urlList[0];
     $method = getMethod();
     $requestData = getData($method);
-    
+    $UploadsDir = "uploads";
+
+
     if (file_exists( realpath(dirname(__FILE__)) . '/routers/' . $router . '.php' )) {
         include_once 'routers/' . $router . '.php';
         route($method, $urlList, $requestData);
