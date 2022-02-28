@@ -38,7 +38,7 @@
                     if(checkIfAdmin())
                         switch($urlList[2]){
                             case 'input':
-                                postInput($requestData, $taskId);
+                                postInput($taskId);
                                 break;
                             case 'output':
                                 // updateOutput($taskId);
