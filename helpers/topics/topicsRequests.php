@@ -31,6 +31,7 @@
         }
         
     }
+
     function getOneTopic($topicId){
         global $Link;
         $topic = $Link->query("SELECT * from topics where id='$topicId'")->fetch_assoc();

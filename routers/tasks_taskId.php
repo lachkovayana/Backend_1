@@ -5,6 +5,7 @@
         include_once './helpers/tasks/tasksRequests.php';
         
         $taskId = $urlList[1];
+        
         switch ($urlList[2]){
             case 'input':
 
@@ -16,15 +17,25 @@
                 if (is_numeric($taskId)){
                     switch ($method){
                         case 'GET':
-                        if (checkToken())
-                            getOneTask($taskId);
-                        break;
-                    case 'POST':
-                        break;
+                            if (checkToken())
+                                getOneTask($taskId);
+                            else 
+                                setHTTPStatus("403", "Authorization token are invalid");
+                            break;
+                        case 'PATCH':
+                            if(checkIfAdmin())
+                                updateTask($requestData, $taskId);
+                            else 
+                                setHTTPStatus("403", "Authorization token are invalid");
+                            break;
                         case 'DELETE':
-                        break;
+                            if(checkIfAdmin())
+                                deleteTask($taskId);
+                            else 
+                                setHTTPStatus("403", "Authorization token are invalid");
+                            break;
                         default:
-                        break;
+                            break;
                     }
                 }
                 else{
