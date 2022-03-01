@@ -10,7 +10,7 @@
         if (is_numeric($taskId)){
             switch ($method){
                 case 'GET':
-                    // if (checkToken())
+                    if (checkToken())
                         switch($urlList[2]){
                             case 'input':
                                 getFilePath($taskId, 'input');
@@ -24,8 +24,8 @@
                             default:
                                 setHTTPStatus("404", "No such path");
                         }
-                    // else 
-                    //     setHTTPStatus("403", "Authorization token are invalid");
+                    else 
+                        setHTTPStatus("403", "Authorization token is invalid");
                     break;
                 case 'PATCH':
                     if(checkIfAdmin()){
@@ -51,7 +51,7 @@
                                 setHTTPStatus("404", "No such path");
                         }
                     else 
-                        setHTTPStatus("403", "You are not an administrator");
+                        setHTTPStatus("403", "Authorization token is invalid");
                     break;
                 case 'DELETE':
                     if(checkIfAdmin())

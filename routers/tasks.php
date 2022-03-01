@@ -14,12 +14,16 @@
         else{
             switch ($method){
                 case 'GET':
-                    getAllTasks($requestData);
+                    if (checkToken())
+                        getAllTasks($requestData);
+                    else 
+                        setHTTPStatus("403", "Authorization token is invalid");
                     break;
                 case 'POST':
-                    if (checkIfAdmin()){
+                    if (checkIfAdmin())
                         createNewTask($requestData);
-                    }
+                    else 
+                        setHTTPStatus("403", "you are not an administrator");
                     break;
                 default:
                     setHTTPStatus("405", "Method mot allow");

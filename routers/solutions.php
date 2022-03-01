@@ -60,7 +60,6 @@
                                 }
                             }
                             else 
-                            echo $Link->errno . $Link->error;
                                 setHTTPStatus("500",  "Something went wrong");
                         }
                         else 

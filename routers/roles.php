@@ -21,7 +21,7 @@
                     
             }
             else {
-                setHTTPStatus("403", "Authorization token are invalid");
+                setHTTPStatus("403", "Authorization token is invalid");
             }
         }
         else {
