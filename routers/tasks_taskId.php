@@ -8,6 +8,7 @@
 
         $taskId = $urlList[1];
         if (is_numeric($taskId)){
+            settype($taskId, 'integer');
             switch ($method){
                 case 'GET':
                     if (checkToken())

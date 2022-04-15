@@ -85,6 +85,7 @@
                         setHTTPStatus("400", "No such role");
                         return;
                     }
+                    
                     else {
                         setHTTPStatus("500", "Something went wrong");
                     }

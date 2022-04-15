@@ -33,8 +33,8 @@
     $url = rtrim($url, '/');
     $urlList = explode('/', $url);
 
-    if ($urlList[0] == 'API'){
-        $urlList = array_slice($urlList, 1);
+    // if ($urlList[0] == 'API'){
+        // $urlList = array_slice($urlList, 1);
         $router = $urlList[0];
         $method = getMethod();
         $requestData = getData($method);
@@ -46,11 +46,11 @@
             route($method, $urlList, $requestData);
         }
         else 
-            setHTTPStatus("404", "No such path");
+            setHTTPStatus("404", "No such path 2");
         
-    }
-    else
-        setHTTPStatus("404", "No such path");
+    // }
+    // else
+    //     setHTTPStatus("404", "No such path");
 
     
 ?>

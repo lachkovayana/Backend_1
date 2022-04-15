@@ -3,7 +3,9 @@
         global $Link, $UploadsDir;
         
         $file = $_FILES[$column];
+        // echo $file['type'];
         if($file['type'] == "text/plain" ){
+
             $pathToUploads = "$UploadsDir"  . "/" . $column . "_". time() . "_" . basename($file['name']);
             move_uploaded_file($file['tmp_name'], $pathToUploads);
         }

@@ -6,7 +6,11 @@
         $topicFilter = $data->parameters['topicId'];
 
         if ($nameFilter && $topicFilter){
-            $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where topicId='$topicFilter' and name='$nameFilter'");
+            // $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where topicId='$topicFilter' and name='$nameFilter'");
+            $tasksRequest = $Link->prepare('SELECT id, name, topicId from tasks where topicId=:topicFilter and name=:nameFilter');
+            $tasksRequest->bindValue('topicFilter', $topicFilter, PDO::PARAM_INT);
+            $tasksRequest->bindValue(':nameFilter', $nameFilter, PDO::PARAM_STR);
+            $tasksRequest->execute();
         }
         else if ($nameFilter && !$topicFilter){
             $tasksRequest = $Link->query("SELECT id, name, topicId from tasks where name='$nameFilter'");
@@ -18,6 +22,8 @@
             $tasksRequest = $Link->query("SELECT id, name, topicId from tasks");
         }
         
+
+
         if ($tasksRequest){
             $tasksArray = [];
             foreach ($tasksRequest as $task){

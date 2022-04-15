@@ -1,6 +1,7 @@
 <?php
     function route($method, $urlList, $requestData){
         include_once './helpers/headers.php';
+        include_once './helpers/checks.php';
 
         global $Link;
 
